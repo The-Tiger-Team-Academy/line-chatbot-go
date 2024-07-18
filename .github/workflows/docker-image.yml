@@ -30,7 +30,7 @@ jobs:
         context: .
         file: Dockerfile
         push: true
-        tags: bestbest/line-chatbot:${{ github.sha }}
+        tags: bestbest/line-chatbot:latest
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         CHANNEL_SECRET: ${{ secrets.CHANNEL_SECRET }}
@@ -58,7 +58,7 @@ jobs:
             }
             -re {\\\$ |root@node.*:~#} {
                 send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo 'No existing container to remove.'\r"
-                send "docker pull bestbest/line-chatbot:${{ github.sha }} && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=$CHANNEL_SECRET -e CHANNEL_TOKEN=$CHANNEL_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY bestbest/line-chatbot:${{ github.sha }}\r"
+                send "docker pull bestbest/line-chatbot:latest && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=$CHANNEL_SECRET -e CHANNEL_TOKEN=$CHANNEL_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY bestbest/line-chatbot:latest }}\r"
                 expect {
                     -re "Up.*seconds" {
                         send_user "Container is running.\r"
@@ -87,3 +87,6 @@ jobs:
 
     - name: Confirm deployment success
       run: echo "Deploy Success"
+
+
+
