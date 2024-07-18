@@ -81,9 +81,7 @@ jobs:
                 send "exit\r"
                 expect eof
             }
-        }' > deploy_expect.sh
-        chmod +x deploy_expect.sh
-        ./deploy_expect.sh
+        }
 
     - name: Confirm deployment success
       run: echo "Deploy Success"
