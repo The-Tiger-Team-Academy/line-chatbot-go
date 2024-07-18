@@ -49,45 +49,28 @@ jobs:
         spawn ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud
         
         expect {
-            -re {Enter \[0-5\]:} {
-                # สมมติว่าต้องการเลือก option 3
-                send "3\r"
-                exp_continue
-            }
-            -re {Enter \[0-2\]:} {
-                # สมมติว่าต้องการเลือก option 3
-                send "2\r"
-                exp_continue
-            }
-            "\\$ |root@node.*:~#" {  # Simplified to match any user prompt
-                send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo 'No existing container to remove.'\r"
-                send "docker pull bestbest/line-chatbot:latest && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=$CHANNEL_SECRET -e CHANNEL_TOKEN=$CHANNEL_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY bestbest/line-chatbot:latest\r"
-                expect {
-                    -re "Up.*seconds" {
-                        send_user "Container is running.\r"
-                    }
-                    "Error.*" {
-                        send_user "Error found in logs.\r"
-                        exit 1
-                    }
-                    default {
-                        send_user "Failed to start the container. Checking logs.\r"
-                        send "docker logs line-chatbot-container\r"
-                        exit 1
-                    }
-                }
-                send "exit\r"
-                expect eof
-                exit 0  # Normal exit after all commands are successfully executed
-            }
-            timeout {
-                send_user "Timeout occurred. Check network or server.\r"
-                exit 1
-            }
-        }
-        EOF
-        chmod +x deploy_expect.sh
-        ./deploy_expect.sh
-
-    - name: Confirm deployment success
-      run: echo "Deploy Success"
+              -re {Enter \[0-5\]:} {
+                  # Assuming you want to select option 3 for 'line-bot'
+                  send "3\r"
+                  exp_continue
+              }
+          }
+          
+          # After selecting the environment, now expecting the container selection menu
+          expect {
+              -re {Enter \[0-2\]:} {
+                  # Assuming you want to select option 2 for 'Ubuntu'
+                  send "2\r"
+                  exp_continue
+              }
+          }
+          
+          # Now you should be logged into the node, ready to execute your commands
+          expect {
+              -re {\\\$ |root@node.*:~#} {
+                  # Example commands to run after successful navigation
+                  send "echo 'Successfully navigated the menus and logged into the node.'\r"
+                  send "exit\r"
+                  expect eof
+              }
+          }
