@@ -64,13 +64,3 @@ jobs:
                   exp_continue
               }
           }
-          
-          # Now you should be logged into the node, ready to execute your commands
-          expect {
-              -re {\\\$ |root@node.*:~#} {
-                  # Example commands to run after successful navigation
-                  send "echo 'Successfully navigated the menus and logged into the node.'\r"
-                  send "exit\r"
-                  expect eof
-              }
-          }
