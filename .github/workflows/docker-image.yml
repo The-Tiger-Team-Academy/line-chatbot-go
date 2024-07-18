@@ -59,31 +59,30 @@ jobs:
                 send "2\r"
                 exp_continue
             }
-            -re {\\\$ |root@node.*:~#} {
-                # Commands to run after successful login
+            "\\$ |root@node.*:~#" {  # Simplified to match any user prompt
                 send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo 'No existing container to remove.'\r"
                 send "docker pull bestbest/line-chatbot:latest && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=$CHANNEL_SECRET -e CHANNEL_TOKEN=$CHANNEL_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY bestbest/line-chatbot:latest\r"
                 expect {
                     -re "Up.*seconds" {
                         send_user "Container is running.\r"
                     }
+                    "Error.*" {
+                        send_user "Error found in logs.\r"
+                        exit 1
+                    }
                     default {
                         send_user "Failed to start the container. Checking logs.\r"
                         send "docker logs line-chatbot-container\r"
-                        expect {
-                            -re "Error.*" {
-                                send_user "Error found in logs.\r"
-                                exit 1
-                            }
-                            default {
-                                send_user "No specific error in logs, container exited unexpectedly.\r"
-                                exit 1
-                            }
-                        }
+                        exit 1
                     }
                 }
                 send "exit\r"
                 expect eof
+                exit 0  # Normal exit after all commands are successfully executed
+            }
+            timeout {
+                send_user "Timeout occurred. Check network or server.\r"
+                exit 1
             }
         }
         EOF
