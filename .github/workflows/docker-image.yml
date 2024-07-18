@@ -57,8 +57,8 @@ jobs:
                 exp_continue
             }
             -re {\\\$ |root@node.*:~#} {
-                send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo 'No existing container to remove.'\r"
-                send "docker pull bestbest/line-chatbot:latest && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=$CHANNEL_SECRET -e CHANNEL_TOKEN=$CHANNEL_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY bestbest/line-chatbot:latest }}\r"
+                send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo \'No existing container to remove.\'\r"
+                send "docker pull bestbest/line-chatbot:latest && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=\$CHANNEL_SECRET -e CHANNEL_TOKEN=\$CHANNEL_TOKEN -e OPENAI_API_KEY=\$OPENAI_API_KEY bestbest/line-chatbot:latest\r"
                 expect {
                     -re "Up.*seconds" {
                         send_user "Container is running.\r"
@@ -81,10 +81,9 @@ jobs:
                 send "exit\r"
                 expect eof
             }
-        }
+        }' > deploy_expect.sh
+        chmod +x deploy_expect.sh
+        ./deploy_expect.sh
 
     - name: Confirm deployment success
       run: echo "Deploy Success"
-
-
-
