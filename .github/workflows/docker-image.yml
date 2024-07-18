@@ -62,6 +62,7 @@ jobs:
                 expect {
                     -re "Up.*seconds" {
                         send_user "Container is running.\r"
+                        set exit_status 0
                     }
                     default {
                         send_user "Failed to start the container. Checking logs.\r"
@@ -69,17 +70,18 @@ jobs:
                         expect {
                             -re "Error.*" {
                                 send_user "Error found in logs.\r"
-                                exit 1
+                                set exit_status 1
                             }
                             default {
                                 send_user "No specific error in logs, container exited unexpectedly.\r"
-                                exit 1
+                                set exit_status 1
                             }
                         }
                     }
                 }
                 send "exit\r"
                 expect eof
+                exit \$exit_status
             }
         }' > deploy_expect.sh
         chmod +x deploy_expect.sh
