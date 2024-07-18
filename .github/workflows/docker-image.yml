@@ -54,6 +54,11 @@ jobs:
                 send "3\r"
                 exp_continue
             }
+            -re {Enter \[0-2\]:} {
+                # สมมติว่าต้องการเลือก option 3
+                send "2\r"
+                exp_continue
+            }
             -re {\\\$ |root@node.*:~#} {
                 # Commands to run after successful login
                 send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo 'No existing container to remove.'\r"
