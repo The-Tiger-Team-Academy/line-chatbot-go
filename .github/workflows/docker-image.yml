@@ -47,19 +47,17 @@ jobs:
         exp_internal 1  # Enable debugging
     
         spawn ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud
-    
+        
         expect {
-            -re {Enter \[0-3\]:} {
+            -re {Enter \[0-5\]:} {
+                # สมมติว่าต้องการเลือก option 3
                 send "3\r"
                 exp_continue
             }
-            -re {Enter \[0-2\]:} {
-                send "2\r"
-                exp_continue
-            }
             -re {\\\$ |root@node.*:~#} {
+                # Commands to run after successful login
                 send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo 'No existing container to remove.'\r"
-                send "docker pull bestbest/line-chatbot:${{ github.sha }} && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=$CHANNEL_SECRET -e CHANNEL_TOKEN=$CHANNEL_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY bestbest/line-chatbot:${{ github.sha }} \r"
+                send "docker pull bestbest/line-chatbot:latest && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=$CHANNEL_SECRET -e CHANNEL_TOKEN=$CHANNEL_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY bestbest/line-chatbot:latest\r"
                 expect {
                     -re "Up.*seconds" {
                         send_user "Container is running.\r"
