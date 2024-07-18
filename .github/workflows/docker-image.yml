@@ -40,13 +40,14 @@ jobs:
     - name: Deploy via SSH
       run: |
         sudo apt-get update
-        sudo apt-get install -y expect 
-        echo '#!/usr/bin/expect -f
+        sudo apt-get install -y expect
+        cat > deploy_expect.sh << 'EOF'
+        #!/usr/bin/expect -f
         set timeout -1
         exp_internal 1  # Enable debugging
-
+    
         spawn ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud
-
+    
         expect {
             -re {Enter \[0-3\]:} {
                 send "3\r"
@@ -57,8 +58,8 @@ jobs:
                 exp_continue
             }
             -re {\\\$ |root@node.*:~#} {
-                send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo \'No existing container to remove.\'\r"
-                send "docker pull bestbest/line-chatbot:latest && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=\$CHANNEL_SECRET -e CHANNEL_TOKEN=\$CHANNEL_TOKEN -e OPENAI_API_KEY=\$OPENAI_API_KEY bestbest/line-chatbot:latest\r"
+                send "docker ps -a | grep line-chatbot-container && docker rm -f line-chatbot-container || echo 'No existing container to remove.'\r"
+                send "docker pull bestbest/line-chatbot:latest && docker run -d --name line-chatbot-container -p $PORT:6789 -e CHANNEL_SECRET=$CHANNEL_SECRET -e CHANNEL_TOKEN=$CHANNEL_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY bestbest/line-chatbot:latest\r"
                 expect {
                     -re "Up.*seconds" {
                         send_user "Container is running.\r"
@@ -81,11 +82,13 @@ jobs:
                 }
                 send "exit\r"
                 expect eof
-                exit \$exit_status
+                exit $exit_status
             }
-        }' > deploy_expect.sh
+        }
+        EOF
         chmod +x deploy_expect.sh
         ./deploy_expect.sh
+
 
     - name: Confirm deployment success
       run: echo "Deploy Success"
