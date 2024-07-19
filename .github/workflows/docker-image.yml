@@ -39,7 +39,6 @@ jobs:
         cat > deploy_expect.sh << 'EOF'
         #!/usr/bin/expect -f
         set timeout -1
-        log_file -a ssh_output.log  # Log output for debugging
         spawn ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud
         
         expect {
@@ -65,3 +64,4 @@ jobs:
         EOF
         chmod +x deploy_expect.sh
         ./deploy_expect.sh
+
