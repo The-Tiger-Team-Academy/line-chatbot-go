@@ -73,8 +73,3 @@ jobs:
             chmod +x deploy_expect.sh
             ./deploy_expect.sh
             cat /tmp/deploy.log
-
-      - name: Clean up
-        run: |
-          rm deploy_expect.sh
-          echo "Clean up complete."
