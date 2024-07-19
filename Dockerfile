@@ -37,7 +37,6 @@ COPY . .
 # Build the application
 RUN go build -o main .
 
-# Expose the port the app runs on
 EXPOSE 6789
 
 # Set environment variables (values need to be passed at runtime)
