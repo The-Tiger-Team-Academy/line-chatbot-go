@@ -203,8 +203,8 @@ func handleLineBotRequest(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Println("Error loading .env file")
-	}
+	// 	log.Println("Error loading .env file")
+	// }
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/callback", handleLineBotRequest)
