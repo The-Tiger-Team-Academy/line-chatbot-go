@@ -176,7 +176,7 @@ func handleLineBotRequest(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if err != nil {
-				log.Printf("Error handling message: %v", err)
+				log.Printf("Error message: %v", err)
 				continue
 			}
 
