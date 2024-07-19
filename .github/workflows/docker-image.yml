@@ -9,7 +9,6 @@ env:
   OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
   CHANNEL_SECRET: ${{ secrets.CHANNEL_SECRET }}
   CHANNEL_TOKEN: ${{ secrets.CHANNEL_TOKEN }}
-  PORT: ${{ secrets.PORT }}
 
 jobs:
   deploy:
@@ -62,7 +61,7 @@ jobs:
               "root@*" {
                   send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
                   send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
-                  send "docker run -d \
+                  send "docker run -d -p 6789:6789 \
                         --name optimistic_haslett \
                         -p $PORT:$PORT \
                         -e OPENAI_API_KEY=$OPENAI_API_KEY \
