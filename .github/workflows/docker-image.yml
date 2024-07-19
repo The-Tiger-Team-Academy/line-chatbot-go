@@ -61,7 +61,7 @@ jobs:
                         -p 6789:6789 \
                         -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
                         -e CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} \
-                        -e CHANNEL_TOKEN=${{ secrets.CHANNEL_SECRET }} \
+                        -e CHANNEL_TOKEN=${{ secrets.CHANNEL_TOKEN }} \
                         bestbest/line-chatbot:${{ github.sha }}\r"
                   send "exit\r"
               }
