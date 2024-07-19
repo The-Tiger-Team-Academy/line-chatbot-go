@@ -61,6 +61,7 @@ jobs:
             }
         }
         expect eof
+        close
         EOF
         chmod +x deploy_expect.sh
         ./deploy_expect.sh
