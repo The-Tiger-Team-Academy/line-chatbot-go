@@ -65,25 +65,13 @@ jobs:
                       "Status: Image is up to date" {
                           send_user "Image is up to date\n"
                       }
-                  }
-                  send "docker stop optimistic_haslett\r"
-                  expect {
-                      "No such container" {
-                          send_user "No container to stop.\n"
-                      }
-                      eof {
-                          send_user "Container stopped.\n"
+                      default {
+                          send_user "Unexpected Docker response\n"
+                          exit 1
                       }
                   }
-                  send "docker rm optimistic_haslett\r"
-                  expect {
-                      "No such container" {
-                          send_user "No container to remove.\n"
-                      }
-                      eof {
-                          send_user "Container removed.\n"
-                      }
-                  }
+                  send "docker stop optimistic_haslett || true\r"
+                  send "docker rm optimistic_haslett || true\r"
                   send "docker run -d \
                         --name optimistic_haslett \
                         -p 6789:6789 \
@@ -91,17 +79,18 @@ jobs:
                         -e CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} \
                         -e CHANNEL_TOKEN=${{ secrets.CHANNEL_TOKEN }} \
                         bestbest/line-chatbot:${{ github.sha }}\r"
-                  expect {
-                      "Unable to find image" {
-                          send_user "Error: Docker image not found.\n"
-                          exit 1
-                      }
-                      eof {
-                          send_user "Container started.\n"
-                      }
-                  }
                   send "exit\r"
-                  expect eof
-                  send_user "Finished deployment script.\n"
-                  close
-    
+              }
+          }
+          expect eof
+          send_user "Finished deployment script.\n"
+          close
+          EOF
+          chmod +x deploy_expect.sh
+          ./deploy_expect.sh
+          cat /tmp/deploy.log
+
+      - name: Clean up
+        run: |
+          rm deploy_expect.sh
+          echo "Clean up complete."
