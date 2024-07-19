@@ -61,5 +61,5 @@ jobs:
                 send "exit\r"
             }
         }
-        expect eof
+        interact
 
