@@ -97,10 +97,16 @@ jobs:
                   expect {
                     -re {.*Error.*} {
                       send_user "Failed to run Docker container\n"
+                      send "docker logs optimistic_haslett\r"
+                      expect "*"
                       exit 1
                     }
-                    default {
+                    -re {.*Container .* running.*} {
                       send_user "Docker container started successfully\n"
+                    }
+                    default {
+                      send_user "Default case hit after docker run, something might be wrong\n"
+                      exit 1
                     }
                   }
                   
