@@ -78,7 +78,7 @@ func callOpenAI(apiKey string, messages []OpenAIMessage) (string, error) {
 		Model:            "gpt-4o",
 		Messages:         messages,
 		Temperature:      0.7,
-		MaxTokens:        300,
+		MaxTokens:        250,
 		TopP:             0,
 		FrequencyPenalty: 0,
 		PresencePenalty:  0,
@@ -212,7 +212,7 @@ func main() {
 	port := os.Getenv("PORT")
 	// port := "6789"
 	if port == "" {
-		port = "8080"
+		port = "6789"
 	}
 
 	srv := &http.Server{
