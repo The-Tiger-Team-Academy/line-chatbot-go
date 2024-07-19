@@ -58,11 +58,10 @@ jobs:
                   send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
                   send "docker run -d \
                         --name optimistic_haslett \
-                        -p $PORT:$PORT \
+                        -p 6789:6789 \
                         -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
                         -e CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} \
                         -e CHANNEL_TOKEN=${{ secrets.CHANNEL_SECRET }} \
-                        -e PORT=$PORT \
                         bestbest/line-chatbot:${{ github.sha }}\r"
                   send "exit\r"
               }
