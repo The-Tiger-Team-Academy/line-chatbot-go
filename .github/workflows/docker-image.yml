@@ -36,11 +36,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y expect
+          
           cat > deploy_expect.sh << 'EOF'
           #!/usr/bin/expect -f
           set timeout -1
           log_file -a /tmp/deploy.log
           send_user "Starting SSH connection...\n"
+          
           spawn ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud
           
           expect {
@@ -58,14 +60,17 @@ jobs:
               "root@*" {
                   send_user "Connected to server\n"
                   send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
+                  expect {
+                    -re {.*Status: Downloaded newer image.*} {
+                      send_user "Docker image pulled successfully\n"
+                    }
+                    -re {.*Error.*} {
+                      send_user "Failed to pull Docker image\n"
+                      exit 1
+                    }
+                  }
                   send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
-                  send "docker run -d \
-                        --name optimistic_haslett \
-                        -p 6789:6789 \
-                        -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-                        -e CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} \
-                        -e CHANNEL_TOKEN=${{ secrets.CHANNEL_TOKEN }} \
-                        bestbest/line-chatbot:${{ github.sha }}\r"
+                  send "docker run -d --name optimistic_haslett -p 6789:6789 -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} -e CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} -e CHANNEL_TOKEN=${{ secrets.CHANNEL_TOKEN }} bestbest/line-chatbot:${{ github.sha }}\r"
                   send "exit\r"
               }
           }
@@ -73,6 +78,7 @@ jobs:
           send_user "Finished deployment script.\n"
           close
           EOF
+          
           chmod +x deploy_expect.sh
-          ./deploy_expect.sh
+          ./deploy_expect.sh || { echo "Deployment script failed"; exit 1; }
           cat /tmp/deploy.log
