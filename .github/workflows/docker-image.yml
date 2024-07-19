@@ -53,19 +53,12 @@ jobs:
                 send "2\r"
                 exp_continue
             }
-          "root@*" {
-              send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
-              expect {
-                  "Downloaded newer image" { }
-                  "Image is up to date" { }
-                  timeout { puts "Docker pull timeout"; exit 1 }
-              }
-              send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
-              expect "optimistic_haslett"
-              send "docker run -d --name optimistic_haslett -p 6789:6789 -e OPENAI_API_KEY='${{ secrets.OPENAI_API_KEY }}' -e CHANNEL_SECRET='${{ secrets.CHANNEL_SECRET }}' -e CHANNEL_TOKEN='${{ secrets.CHANNEL_TOKEN }}' bestbest/line-chatbot:'${{ github.sha }}'\\r"
-              expect "optimistic_haslett"
-              send "exit\r"
-          }
+            "root@*" {
+                send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
+                send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
+                send "docker run -d --name optimistic_haslett -p 6789:6789 -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} -e CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} -e CHANNEL_TOKEN=${{ secrets.CHANNEL_TOKEN }} bestbest/line-chatbot:${{ github.sha }}\\r"
+                send "exit"
+            }
         }
         expect eof
         close
