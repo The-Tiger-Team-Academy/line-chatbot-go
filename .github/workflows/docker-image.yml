@@ -54,7 +54,7 @@ jobs:
                 exp_continue
             }
           "root@*" {
-              send "docker pull bestbest/line-chatbot:$github_sha\r"
+              send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
               expect {
                   "Downloaded newer image" { }
                   "Image is up to date" { }
