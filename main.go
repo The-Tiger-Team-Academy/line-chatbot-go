@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
@@ -202,7 +202,7 @@ func handleLineBotRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	if err := godotenv.Load(); err != nil {
+	// if err := godotenv.Load(); err != nil {
 	// 	log.Println("Error loading .env file")
 	// }
 
