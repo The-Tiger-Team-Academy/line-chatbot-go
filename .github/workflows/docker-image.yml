@@ -39,9 +39,7 @@ jobs:
         cat > deploy_expect.sh << 'EOF'
         #!/usr/bin/expect -f
         set timeout -1
-
-        spawn ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud
-
+        ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud
         expect {
             -re {.*Permanently added.*} {
                 exp_continue
