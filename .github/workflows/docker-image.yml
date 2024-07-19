@@ -62,7 +62,7 @@ jobs:
                 send "exit\r"
             }
             -re {.*Enter \[0-2\]:} {
-                send "2\r"
+                send "0\r"
                 exp_continue
             }
         }
