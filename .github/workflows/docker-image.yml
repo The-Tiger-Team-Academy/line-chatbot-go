@@ -60,8 +60,9 @@ jobs:
                 send "exit\r"
                 expect "logout"
                 send "exit\r"
-                expect "Enter \[0-2\]:" {  # ตรวจจับ prompt หลังจาก exit
-                    send "0\r"
+                expect "Enter \[0-2\]:" {  
+                    send "0\r"  
+                }
             }
         }
         expect eof
