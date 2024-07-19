@@ -73,23 +73,23 @@ jobs:
                   
                   send "docker stop optimistic_haslett\r"
                   expect {
+                    -re {.*optimistic_haslett.*} {
+                      send_user "Docker container stopped successfully\n"
+                    }
                     -re {.*Error.*} {
                       send_user "Failed to stop Docker container\n"
                       exit 1
-                    }
-                    default {
-                      send_user "Docker container stopped successfully\n"
                     }
                   }
                   
                   send "docker rm optimistic_haslett\r"
                   expect {
+                    -re {.*optimistic_haslett.*} {
+                      send_user "Docker container removed successfully\n"
+                    }
                     -re {.*Error.*} {
                       send_user "Failed to remove Docker container\n"
                       exit 1
-                    }
-                    default {
-                      send_user "Docker container removed successfully\n"
                     }
                   }
                   
