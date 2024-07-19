@@ -54,12 +54,15 @@ jobs:
                 exp_continue
             }
             -re {root@.*:.*#} {
-                log_file output.log  # เริ่มบันทึกปฏิกิริยาเซสชัน
-                send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
-                send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
-                send "docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r"
-                send "exit\r"
+                send "docker pull bestbest/line-chatbot:${{ github.sha }} && docker stop optimistic_haslett && docker rm optimistic_haslett && docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r"
+                expect {
+                    -re {Error.*} {
+                        exit 1
+                    }
+                    "Downloaded newer image for" {
+                        send "exit\r"
+                    }
+                }
             }
         }
-        interact
-
+        expect eof
