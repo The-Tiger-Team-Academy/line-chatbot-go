@@ -3,7 +3,7 @@ name: Deploy Line-chatbot
 on:
   push:
     branches:
-      - main  
+      - main
 
 jobs:
   deploy:
