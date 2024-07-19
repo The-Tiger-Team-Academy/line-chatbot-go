@@ -59,9 +59,10 @@ jobs:
               }
               "root@*" {
                   send_user "Connected to server\n"
+                  
                   send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
                   expect {
-                    -re {.*Status: Downloaded newer image.*} {
+                    -re {.*Status: Downloaded newer image.*|.*Status: Image is up to date.*} {
                       send_user "Docker image pulled successfully\n"
                     }
                     -re {.*Error.*} {
@@ -69,8 +70,40 @@ jobs:
                       exit 1
                     }
                   }
-                  send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
+                  
+                  send "docker stop optimistic_haslett\r"
+                  expect {
+                    -re {.*Error.*} {
+                      send_user "Failed to stop Docker container\n"
+                      exit 1
+                    }
+                    default {
+                      send_user "Docker container stopped successfully\n"
+                    }
+                  }
+                  
+                  send "docker rm optimistic_haslett\r"
+                  expect {
+                    -re {.*Error.*} {
+                      send_user "Failed to remove Docker container\n"
+                      exit 1
+                    }
+                    default {
+                      send_user "Docker container removed successfully\n"
+                    }
+                  }
+                  
                   send "docker run -d --name optimistic_haslett -p 6789:6789 -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} -e CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} -e CHANNEL_TOKEN=${{ secrets.CHANNEL_TOKEN }} bestbest/line-chatbot:${{ github.sha }}\r"
+                  expect {
+                    -re {.*Error.*} {
+                      send_user "Failed to run Docker container\n"
+                      exit 1
+                    }
+                    default {
+                      send_user "Docker container started successfully\n"
+                    }
+                  }
+                  
                   send "exit\r"
               }
           }
