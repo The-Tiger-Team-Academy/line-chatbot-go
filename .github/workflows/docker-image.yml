@@ -57,7 +57,6 @@ jobs:
                 send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
                 send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
                 send "docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r"
-                send "exit\r"
             }
         }
         expect eof
