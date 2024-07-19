@@ -53,12 +53,11 @@ jobs:
                 send "2\r"
                 exp_continue
             }
-            "root@*" {
+            -re {root@.*:.*#} {
                 send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
                 send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
                 send "docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r"
+                send "exit\r"
             }
         }
-        EOF
-        chmod +x deploy_expect.sh
-        ./deploy_expect.sh
+        expect eof
