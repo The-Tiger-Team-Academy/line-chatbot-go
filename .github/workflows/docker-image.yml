@@ -56,6 +56,16 @@ jobs:
             -re {root@.*:.*#} {
                 log_file output.log  # เริ่มบันทึกปฏิกิริยาเซสชัน
                 send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
+        expect {
+            "*Error*" {
+                puts "Error in pulling Docker image"
+                exit 1
+            }
+            "*Downloaded*" {
+                puts "Docker image pulled successfully"
+            }
+        }
+
                 send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
                 send "docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r"
                 send "exit\r"
