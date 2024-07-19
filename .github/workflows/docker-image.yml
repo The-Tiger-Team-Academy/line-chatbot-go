@@ -58,6 +58,14 @@ jobs:
               "root@*" {
                   send_user "Connected to server\n"
                   send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
+                  expect {
+                      "Status: Downloaded newer image" {
+                          send_user "Image pulled successfully\n"
+                      }
+                      "Status: Image is up to date" {
+                          send_user "Image is up to date\n"
+                      }
+                  }
                   send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
                   send "docker run -d \
                         --name optimistic_haslett \
