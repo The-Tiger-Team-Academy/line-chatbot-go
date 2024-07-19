@@ -31,6 +31,7 @@ jobs:
         file: Dockerfile
         push: true
         tags: bestbest/line-chatbot:${{ github.sha }}
+        build-args: OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
 
     - name: Deploy via SSH
       run: |
