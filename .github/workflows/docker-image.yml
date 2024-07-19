@@ -36,16 +36,32 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y expect
-        echo '#!/usr/bin/expect -f' > deploy_expect.sh
-        echo 'set timeout -1' >> deploy_expect.sh
-        echo 'exp_internal 1' >> deploy_expect.sh
-        echo 'spawn ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud' >> deploy_expect.sh
-        echo 'expect "Enter \[0-5\]:" { send "3\r" }' >> deploy_expect.sh
-        echo 'expect "Enter \[0-2\]:" { send "2\r" }' >> deploy_expect.sh
-        echo 'expect "root@*" { send "docker pull bestbest/line-chatbot:${{ github.sha }}\r" }' >> deploy_expect.sh
-        echo 'expect "root@*" { send "docker stop optimistic_haslett && docker rm optimistic_haslett\r" }' >> deploy_expect.sh
-        echo 'expect "root@*" { send "docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r" }' >> deploy_expect.sh
-        echo 'expect "root@*" { send "exit\r" }' >> deploy_expect.sh
-        echo 'expect eof' >> deploy_expect.sh
+        cat > deploy_expect.sh << 'EOF'
+        #!/usr/bin/expect -f
+        set timeout -1
+        log_file -a ssh_output.log  # Log output for debugging
+        spawn ssh -o BatchMode=yes -o StrictHostKeyChecking=no -p 3022 4504@gate.manage.proen.cloud
+        
+        expect {
+            -re {.*Permanently added.*} {
+                exp_continue  # Handle new host key confirmation
+            }
+            -re {.*Enter \[0-5\]:} {
+                send "3\r"
+                exp_continue
+            }
+            -re {.*Enter \[0-2\]:} {
+                send "2\r"
+                exp_continue
+            }
+            "root@*" {
+                send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
+                send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
+                send "docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r"
+                send "exit\r"
+            }
+        }
+        expect eof
+        EOF
         chmod +x deploy_expect.sh
         ./deploy_expect.sh
