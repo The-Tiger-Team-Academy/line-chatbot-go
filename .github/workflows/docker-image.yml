@@ -31,7 +31,10 @@ jobs:
         file: Dockerfile
         push: true
         tags: bestbest/line-chatbot:${{ github.sha }}
-        build-args: OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+        build-args: 
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CHANNEL_SECRET: ${{ secrets.CHANNEL_SECRET }}
+          CHANNEL_TOKEN: ${{ secrets.CHANNEL_TOKEN }}
 
     - name: Deploy via SSH
       run: |
@@ -58,7 +61,7 @@ jobs:
                 send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
                 send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
                 send "docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r"
-                send "exit"
+                send "exit\r"
             }
         }
         expect eof
@@ -66,4 +69,3 @@ jobs:
         EOF
         chmod +x deploy_expect.sh
         ./deploy_expect.sh
-
