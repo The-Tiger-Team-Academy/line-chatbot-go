@@ -60,7 +60,10 @@ jobs:
                 send "exit\r"
                 expect "logout"   # ตรวจจับคำว่า logout ที่บ่งบอกว่าเซสชันได้จบลง
                 send "exit\r"
-                expect "logout"
+            }
+            -re {.*Enter \[0-2\]:} {
+                send "2\r"
+                exp_continue
             }
         }
         expect eof
