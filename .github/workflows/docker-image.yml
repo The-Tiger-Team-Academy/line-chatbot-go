@@ -56,11 +56,12 @@ jobs:
               "root@*" {
                   send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
                   send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
-                  send "docker run -d -p 6789:6789 \
+                  send "docker run -d \
                         --name optimistic_haslett \
-                        -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-                        -e CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} \
-                        -e CHANNEL_TOKEN=${{ secrets.CHANNEL_TOKEN }} \
+                        -p $PORT:$PORT \
+                        -e OPENAI_API_KEY=$OPENAI_API_KEY \
+                        -e CHANNEL_SECRET=$CHANNEL_SECRET \
+                        -e CHANNEL_TOKEN=$CHANNEL_TOKEN \
                         -e PORT=$PORT \
                         bestbest/line-chatbot:${{ github.sha }}\r"
                   send "exit\r"
