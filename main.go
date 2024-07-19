@@ -182,7 +182,8 @@ func handleLineBotRequest(w http.ResponseWriter, r *http.Request) {
 
 			conversation.AddMessage("user", userMessage)
 
-			openAIKey := os.Getenv("OPENAI_API_KEY")
+			// openAIKey := os.Getenv("OPENAI_API_KEY")
+			openAIKey := "sk-proj-zcXG0Wqxw5gvZeeBqcWxT3BlbkFJTOGLXyQJxDBiDXTeHcJh"
 			openAIResponse, err := callOpenAI(openAIKey, conversation.Messages)
 			if err != nil {
 				log.Printf("Error calling OpenAI: %v", err)
