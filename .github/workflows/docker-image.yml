@@ -60,6 +60,10 @@ jobs:
                 send "exit\r"
                 expect "logout"   # ตรวจจับคำว่า logout ที่บ่งบอกว่าเซสชันได้จบลง
                 send "exit\r"
+                expect "logout"
             }
         }
         expect eof
+        EOF
+        chmod +x deploy_expect.sh
+        ./deploy_expect.sh
