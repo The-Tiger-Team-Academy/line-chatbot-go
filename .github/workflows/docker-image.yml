@@ -62,7 +62,7 @@ jobs:
               }
               send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
               expect "optimistic_haslett"
-              send "docker run -d --name optimistic_haslett -p 6789:6789 -e OPENAI_API_KEY='$env(OPENAI_API_KEY)' -e CHANNEL_SECRET='$env(CHANNEL_SECRET)' -e CHANNEL_TOKEN='$env(CHANNEL_TOKEN)' bestbest/line-chatbot:$env(GITHUB_SHA)\r"
+              send "docker run -d --name optimistic_haslett -p 6789:6789 -e OPENAI_API_KEY='$::env(OPENAI_API_KEY)' -e CHANNEL_SECRET='$::env(CHANNEL_SECRET)' -e CHANNEL_TOKEN='$::env(CHANNEL_TOKEN)' bestbest/line-chatbot:$::env(GITHUB_SHA)\r"
               expect "optimistic_haslett"
               send "exit\r"
           }
