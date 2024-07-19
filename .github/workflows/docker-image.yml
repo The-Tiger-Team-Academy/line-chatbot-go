@@ -57,15 +57,8 @@ jobs:
                 send "docker pull bestbest/line-chatbot:${{ github.sha }}\r"
                 send "docker stop optimistic_haslett && docker rm optimistic_haslett\r"
                 send "docker run -d --name optimistic_haslett -p 6789:6789 bestbest/line-chatbot:${{ github.sha }}\r"
-                send "exit\r"
-                expect "logout"
-                send "exit\r"
-                expect "Enter \[0-2\]:" {  
-                    send "0\r"  
-                }
             }
         }
-        expect eof
         EOF
         chmod +x deploy_expect.sh
         ./deploy_expect.sh
